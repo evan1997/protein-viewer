@@ -46,7 +46,7 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "https://您的用户名.github.io/protein-viewer",
+  "homepage": "/",
   "devDependencies": {
     "gh-pages": "^6.3.0"
   }

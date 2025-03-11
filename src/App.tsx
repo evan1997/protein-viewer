@@ -5,13 +5,39 @@ import ProteinViewer from './components/ProteinViewer';
 function App() {
   const [pdbId, setPdbId] = useState<string>('1CRN');
   const [inputPdbId, setInputPdbId] = useState<string>('1CRN');
+  const [pdbData, setPdbData] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setPdbId(inputPdbId);
+    setPdbData(null); // 清除之前上传的PDB数据
+    setFileName(null);
   };
 
-  const examplePdbIds = ['1CRN', '4HHB', '1BNA', '1AKE', '3PQR'];
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setFileName(file.name);
+    
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      setPdbData(content);
+      setPdbId(''); // 清除PDB ID，因为我们现在使用上传的数据
+    };
+    reader.readAsText(file);
+  };
+
+  const clearUploadedFile = () => {
+    setPdbData(null);
+    setFileName(null);
+    setInputPdbId('1CRN');
+    setPdbId('1CRN');
+  };
+
+  const examplePdbIds = ['1CRN', '4HHB', '1BNA', '1AKE', '3PQR', '1HIV', '2LYZ', '1A3N', '1OLG', '3EIY'];
 
   return (
     <div className="App">
@@ -28,9 +54,30 @@ function App() {
               value={inputPdbId}
               onChange={(e) => setInputPdbId(e.target.value)}
               placeholder="例如：1CRN"
+              disabled={!!pdbData}
             />
-            <button type="submit">查看</button>
+            <button type="submit" disabled={!!pdbData}>查看</button>
           </form>
+          
+          <div className="file-upload-container">
+            <label htmlFor="pdbFile" className="file-upload-label">
+              上传PDB文件
+              <input
+                type="file"
+                id="pdbFile"
+                accept=".pdb"
+                onChange={handleFileUpload}
+                style={{ display: 'none' }}
+              />
+            </label>
+            {fileName && (
+              <div className="uploaded-file-info">
+                <span>已上传: {fileName}</span>
+                <button onClick={clearUploadedFile} className="clear-file-btn">清除</button>
+              </div>
+            )}
+          </div>
+          
           <div className="examples">
             <p>示例PDB ID：</p>
             <div className="example-buttons">
@@ -40,7 +87,10 @@ function App() {
                   onClick={() => {
                     setInputPdbId(id);
                     setPdbId(id);
+                    setPdbData(null);
+                    setFileName(null);
                   }}
+                  disabled={!!pdbData}
                 >
                   {id}
                 </button>
@@ -52,13 +102,22 @@ function App() {
         <div className="app-layout">
           <div className="fixed-section">
             <div className="viewer-container">
-              <ProteinViewer pdbId={pdbId} />
+              {pdbData ? (
+                <ProteinViewer pdbData={pdbData} />
+              ) : (
+                <ProteinViewer pdbId={pdbId} />
+              )}
             </div>
           </div>
           
           <div className="scrollable-section">
             <div className="info-container">
-              <h2>当前显示：{pdbId}</h2>
+              <h2>
+                {pdbData 
+                  ? `当前显示：${fileName}` 
+                  : `当前显示：${pdbId}`
+                }
+              </h2>
               <p>
                 PDB ID是蛋白质数据库（Protein Data Bank）中的唯一标识符。
                 您可以在<a href="https://www.rcsb.org/" target="_blank" rel="noopener noreferrer">RCSB PDB</a>网站上搜索更多蛋白质结构。
