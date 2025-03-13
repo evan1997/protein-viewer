@@ -3,3 +3,14 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
+
+// 添加全局类型定义，以避免TypeScript错误
+declare global {
+  namespace NodeJS {
+    interface Global {
+      $3Dmol: any;
+    }
+  }
+  
+  var $3Dmol: any;
+}

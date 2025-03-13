@@ -84,7 +84,7 @@ const ProteinViewer: React.FC<ProteinViewerProps> = ({
     
     // 添加表面
     if (showSurface) {
-      viewerRef.current.addSurface(1, {
+      viewerRef.current.addSurface('1', {
         opacity: surfaceOpacity,
         color: 'white'
       });

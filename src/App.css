@@ -124,16 +124,29 @@ button:hover {
 .app-layout {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 140px); /* 减去header和footer的高度 */
+  /* 修改高度计算，确保有足够空间 */
+  min-height: 600px; /* 使用固定的最小高度 */
+  margin-bottom: 30px;
 }
 
 .fixed-section {
-  position: sticky;
-  top: 0;
+  position: relative; /* 改为相对定位，而不是粘性定位 */
   background-color: white;
   z-index: 10;
+  margin-bottom: 20px; /* 添加底部间距 */
 }
 
+/* 修改 scrollable-section 样式 */
+.scrollable-section {
+  flex: 1;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px; /* 修改为完整的圆角 */
+  background-color: white;
+  /* 添加最小高度确保内容可见 */
+  min-height: 300px;
+  max-height: 500px; /* 限制最大高度，确保可滚动 */
+}
 .viewer-container {
   margin-bottom: 0;
   border: 1px solid #ddd;
@@ -195,14 +208,7 @@ button:hover {
   z-index: 10;
 }
 
-.scrollable-section {
-  flex: 1;
-  overflow-y: auto;
-  border: 1px solid #ddd;
-  border-top: none;
-  border-radius: 0 0 8px 8px;
-  background-color: white;
-}
+
 
 .info-container {
   background-color: #f9f9f9;
